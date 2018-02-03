@@ -8,21 +8,21 @@ class Game {
     if (this._board.playerBoard[rowIndex][columnIndex] === 'B') {
       console.log('Game Over!');
       this._board.print();
-    } else if (this._board.hasSafeTiles()) {
+    } else if (!this._board.hasSafeTiles()) {
       console.log('Congratulations, you won!');
     } else {
       console.log('Current Board:');
       this._board.print();
     }
-  }
+  };
 }
 
 class Board {
   constructor(numberOfRows, numberOfColumns, numberOfBombs) {
     this._numberOfBombs = numberOfBombs;
     this._numberOfTiles = numberOfRows * numberOfColumns;
-    this._playerBoard = generatePlayerBoard(numberOfRows,numberOfColumns);
-    this._bombBoard = generateBombBoard(numberOfRows, numberOfColumns, numberOfBombs);
+    this._playerBoard = Board.generatePlayerBoard(numberOfRows,numberOfColumns);
+    this._bombBoard = Board.generateBombBoard(numberOfRows, numberOfColumns, numberOfBombs);
   }
 
   get playerBoard() {
@@ -51,8 +51,8 @@ class Board {
     neighbourOffsets.forEach(offset => {
       const neighbourRowIndex = rowIndex + offset[0];
       const neighbourColumnIndex = columnIndex + offset[1];
-        if (neighbourRowIndex >= 0 && neighbourRowIndex <= this._numberOfRows &&
-        neighbourColumnIndex >= 0 && neighbourColumnIndex <= this._numberOfColumns) {
+        if (neighbourRowIndex >= 0 && neighbourRowIndex <= numberOfRows &&
+        neighbourColumnIndex >= 0 && neighbourColumnIndex <= numberOfColumns) {
           if (this._bombBoard[neighbourRowIndex][neighbourColumnIndex] === 'B') {
             numberOfBombs++;
           }
@@ -63,11 +63,11 @@ class Board {
 
   hasSafeTiles() {
     return this._numberOfTiles !== this._numberOfBombs;
-  }
+  };
 
-  printBoard() {
+  print() {
     console.log(this._playerBoard.map(row => row.join(' | ')).join('\n'));
-  }
+  };
 
   static generatePlayerBoard(numberOfRows, numberOfColumns) {
     let board = [];
@@ -86,32 +86,20 @@ class Board {
         for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
           row.push(null);
         } board.push(row);
-   }
-}
-
-
-
-  numberOfBombsPlaced = 0
-    while (numberOfBombsPlaced < numberOfBombs) {
-      let randomRowIndex = Math.floor(Math.random() * numberOfRows);
-      let randomColumnIndex = Math.floor(Math.random() * numberOfColumns);
-        if (board[randomRowIndex][randomColumnIndex] !== 'B') {
-          board[randomRowIndex][randomColumnIndex] = 'B';
-          numberOfBombsPlaced++;
-        }
     }
-  return board;
-};
+
+    let numberOfBombsPlaced = 0
+      while (numberOfBombsPlaced < numberOfBombs) {
+        let randomRowIndex = Math.floor(Math.random() * numberOfRows);
+        let randomColumnIndex = Math.floor(Math.random() * numberOfColumns);
+          if (board[randomRowIndex][randomColumnIndex] !== 'B') {
+            board[randomRowIndex][randomColumnIndex] = 'B';
+            numberOfBombsPlaced++;
+          }
+      }
+    return board;
+  };
+}
 
 const g = new Game(3, 3, 3);
 g.playMove(0,0);
-/* let playerBoard = generatePlayerBoard(3, 3);
-let bombBoard = generateBombBoard(3, 3, 3);
-console.log('Player Board: ');
-printBoard(playerBoard);
-console.log('Bomb Board: ');
-printBoard(bombBoard);
-
-flipTile(playerBoard, bombBoard, 0, 0);
-console.log('Updated Player Board: ');
-printBoard(playerBoard); */
